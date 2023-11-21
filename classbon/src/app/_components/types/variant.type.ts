@@ -1,9 +1,1 @@
-export type Variant =
-  | "neutral"
-  | "primary"
-  | "secondary"
-  | "accent"
-  | "ghost"
-  | "info"
-  | "warning"
-  | "error";
+export type Variant = "neutral" | "primary" | "secondary" | "accent" | "ghost" | "info" | "success" | "warning" | "error";
