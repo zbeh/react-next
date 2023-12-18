@@ -8,13 +8,9 @@ import { ICourseSummary } from "@/types/course-summary.interface";
 import { IBlogPostSummary } from "@/types/blog-post-summary.interface";
 import { BlogPostCardList } from "./(blog)/_components/blog-post-card-list";
 import { API_URL } from "@/configs/global";
+import { resolve } from "path";
+import { Suspense } from "react";
 
-async function getNewestCourses(count: number): Promise<ICourseSummary[]> {
-  const res = await fetch(`${API_URL}/courses/newest/${count}`, {
-    next: { revalidate: 24 * 60 * 60 },
-  });
-  return res.json();
-}
 
 async function getNewestPosts(count: number): Promise<IBlogPostSummary[]> {
   const res = await fetch(`${API_URL}/blog/newest/${count}`, {
@@ -24,9 +20,8 @@ async function getNewestPosts(count: number): Promise<IBlogPostSummary[]> {
 }
 
 export default async function Home() {
-  const newestCoursesData = getNewestCourses(4);
   const newestBlogPostsData = getNewestPosts(4);
-  const [newestCourses,newestBlogPosts]= await Promise.all([newestBlogPostsData,newestCoursesData])
+  const [newestBlogPosts]= await Promise.all([newestBlogPostsData])
   return (
     <>
       <HomeHeroSection />
@@ -42,7 +37,9 @@ export default async function Home() {
           <h2 className="text-2xl font-extrabold">تازه ترین دوره های آموزشی</h2>
           <p className="mt-3 text-lg">برای به‌روز موندن، یاد گرفتن نکته‌های تازه ضروری‌ه!</p>
         </div>
-        <CourseCardList courses={newestCourses} />
+        <Suspense fallback={<div>در حال دریافت اطلاعات...</div>}>
+          <CourseCardList courses={[]} />
+        </Suspense>
       </section>
       <section className="px-2 my-40">
         {/* <div className="sticky top-0 pt-0 text-center"> */}
